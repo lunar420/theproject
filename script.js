@@ -2,14 +2,14 @@
     <script src="./stuff/howler.js"></script>
     <script>
         var something = new Howl({
-          src: ['./stuff/start-something.ogg'],
+          src: ['./stuff/sound/start-something.ogg'],
           volume: 0.5,
           onend: function() {
             something2.play();
           }
         });
         var something2 = new Howl({
-          src: ['./stuff/loop-something.ogg'],
+          src: ['./stuff/sound/loop-something.ogg'],
           volume: 0.5,
           loop: true
         });
