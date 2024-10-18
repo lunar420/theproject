@@ -4,30 +4,13 @@
     <script src="./stuff/jquery.min.js"></script>
     <script src="./stuff/howler.js"></script>
     <script>
-    var audio = new Audio('https://github.com/lunar420/theproject/raw/refs/heads/main/stuff/sound/loop-something.ogg');
-    audio.play();
-                volume: 0.5,
-          onend: function() {
-            audioLoop.play();
       var audioLoop = new Audio('https://github.com/lunar420/theproject/raw/refs/heads/main/stuff/sound/start-something.ogg');
         audioLoop.play
-                volume: 0.5,
-          loop: true
-        var something = new Howl({
-          src: ['./stuff/sound/start-something.ogg'],
           volume: 0.5,
-          onend: function() {
-            something2.play();
-          }
-        });
-        var something2 = new Howl({
-          src: ['./stuff/sound/loop-something.ogg'],
-          volume: 0.5,
-          loop: true
-        });
+          loop: true 
 
         $(document).ready(function(){
-            something.play();
+            audioLoop.play();
         });
     </script>
     <style>
