@@ -1,127 +1,315 @@
 <html>
   <head>
-    <title>THE PROJECT</title>
-    <script src="./stuff/jquery.min.js"></script>
+    <title>&nbsp;</title>
     <script src="./stuff/howler.js"></script>
     <script>
-      var audioLoop = new Audio('https://github.com/lunar420/theproject/raw/refs/heads/main/stuff/sound/start-something.ogg');
-        audioLoop.play
+      document.addEventListener("DOMContentLoaded", function() {
+        var something = new Howl({
+          src: ['./stuff/countdown-bgm.ogg'],
           volume: 0.5,
-          loop: true 
-
-        $(document).ready(function(){
-            audioLoop.play();
+          autoplay: true,
+          loop: true
         });
+        var tick = new Howl({
+          src: ['./stuff/tick.ogg'],
+          volume: 1,
+          loop: true
+        });
+        var minute = new Howl({
+          src: ['./stuff/minute.ogg'],
+          volume: 0.25
+        });
+        var chime = new Howl({
+          src: ['./stuff/chime.ogg'],
+          volume: 1
+        });
+        f();
+        setInterval(f, 10);
+
+        function f() {
+          var now = new Date().getTime();
+          var countdownevent = new Date((Date.now() + 100000000)).getTime();
+          var a = countdownevent - now;
+          if (a < 0) {
+            t = "???";
+          } else {
+            var days = Math.floor(a / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((a % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((a % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((a % (1000 * 60)) / 1000);
+            if (hours < 10 && days != 0) {
+              hours = "0" + hours;
+            }
+            if (minutes < 10) {
+              minutes = "0" + minutes;
+            }
+            if (seconds < 10) {
+              seconds = "0" + seconds;
+            }
+            t = days + ':' + hours + ':' + minutes + ':' + seconds;
+          }
+          document.getElementById("counter").innerHTML = t;
+        }
+        var isticking = false;
+        var isrecalling = false;
+        var ischiming = false;
+        tick.once("load", function() {
+          setInterval(function() {
+            var d = new Date();
+            var minutelytime = d.getMilliseconds() + d.getSeconds() * 1000;
+            var hourlytime = d.getMilliseconds() + d.getSeconds() * 1000 + d.getMinutes() * 60000;
+            if (!isticking) {
+              if (d.getMilliseconds() < 50) {
+                tick.play();
+                isticking = true;
+              }
+            }
+            if (!isrecalling) {
+              if (minutelytime > 58220 && minutelytime < 58275) {
+                isrecalling = true;
+                minute.play();
+                document.getElementById("counter").className = "minute";
+                setTimeout(function() {
+                  isrecalling = false;
+                  document.getElementById("counter").className = "";
+                }, 1750);
+              }
+            }
+            if (!ischiming) {
+              if (hourlytime < 50) {
+                ischiming = true;
+                chime.play();
+                document.getElementsByTagName("html")[0].className = "hour";
+                setTimeout(function() {
+                  ischiming = false;
+                  document.getElementsByTagName("html")[0].className = "";
+                }, 2000);
+              }
+            }
+          }, 1);
+        });
+      });
     </script>
     <style>
       @font-face {
         font-family: CNT;
-        src: url(./stuff/countdown.ttf);
+        src: url(./stuff/rs.otf);
       }
 
-      body,
-      html {
+      * {
         background-color: #000;
+        transition: 10s background-color ease-out;
+      }
+
+      .hour,
+      .hour * {
+        transition: 0s background-color ease-out;
+        background-color: #F00;
+      }
+
+      .hour #counter {
+        transition: 0s color ease-out, 0s background-color ease-out;
+        color: #000;
       }
 
       #counter {
         font-family: CNT;
         position: fixed;
         text-align: center;
-        top: 35vh;
+        top: 36vh;
         width: 100vw;
+        left: 0;
         font-size: 5vw;
-        color: rgba(255, 0, 0, 0.7);
-        text-shadow: 0px 1vh rgba(255, 0, 0, 0.4), 0px 1vh 5vh rgba(255, 0, 0, 0.4);
-        animation: Tilt 0.24s ease-in-out infinite alternate;
+        color: #FFF;
+        text-shadow: 0px 0px 8px #FFF, -8px -12px 2px rgba(255, 255, 255, 0.3), 3px 9px 2px rgba(255, 255, 255, 0.3), -14px 8px 2px rgba(255, 255, 255, 0.3), 9px -2px 2px rgba(255, 255, 255, 0.3);
+        filter: none;
+        animation: 3s BlurLoop linear alternate infinite, 5s MoveLoop linear alternate infinite, 9.5s ShadowMoveLoop linear alternate infinite;
+        transition: 3s color ease-out, 10s background-color ease-out;
       }
 
-      @keyframes Tilt {
+      #counter.minute {
+        transition: 1.75s color ease-out, 10s background-color ease-out;
+        color: #F00;
+      }
+
+      @keyframes BlurLoop {
         0% {
-          transform: rotate(-30deg);
-        }
-
-        100% {
-          transform: rotate(30deg) scaleY(3);
-        }
-      }
-
-      @keyframes Wow {
-        0% {
-          background-color: #000;
-        }
-
-        50% {
-          background-color: #000;
-        }
-
-        100% {
-          background-color: #111;
-        }
-      }
-
-      #fuckoff {
-        font-family: CNT;
-        position: fixed;
-        text-align: center;
-        bottom: 0em;
-        width: 100vw;
-        left: -20vw;
-        font-size: 2em;
-        color: rgba(255, 255, 255, 0.4);
-        transform: scaleY(2);
-        animation: BoingBoing 0.48s ease-in-out infinite alternate;
-      }
-
-      @keyframes BoingBoing {
-        0% {
-          transform: scaleY(2);
-          left: -20vw;
-          bottom: 0em;
+          filter: blur(2px);
         }
 
         10% {
-          transform: scaleY(1);
-          left: -20vw;
-          bottom: -0.1em;
+          filter: blur(1px);
+        }
+
+        20% {
+          filter: blur(0px);
         }
 
         30% {
-          transform: scaleY(3);
-          left: -5vw;
-          bottom: 2em;
+          filter: blur(2px);
+        }
+
+        40% {
+          filter: blur(0px);
         }
 
         50% {
-          transform: scaleY(4);
-          left: 0vw;
-          bottom: 2.5em;
+          filter: blur(1px);
+        }
+
+        60% {
+          filter: blur(0px);
         }
 
         70% {
-          transform: scaleY(3);
-          left: 5vw;
-          bottom: 2em;
+          filter: blur(3px);
+        }
+
+        80% {
+          filter: blur(5px);
         }
 
         90% {
-          transform: scaleY(1);
-          left: 20vw;
-          bottom: -0.1em;
+          filter: blur(1px);
         }
 
         100% {
-          transform: scaleY(2);
-          left: 20vw;
-          bottom: 0em;
+          filter: blur(0px);
+        }
+      }
+
+      @keyframes MoveLoop {
+        0% {
+          left: -2px;
+          top: calc(36vh + 2px);
+        }
+
+        10% {
+          left: 4px;
+          top: calc(36vh + 0px);
+        }
+
+        20% {
+          left: -1px;
+          top: calc(36vh + 1px);
+        }
+
+        30% {
+          left: 0px;
+          top: calc(36vh + 0px);
+        }
+
+        40% {
+          left: 3px;
+          top: calc(36vh + 4px);
+        }
+
+        50% {
+          left: -2px;
+          top: calc(36vh + 1px);
+        }
+
+        60% {
+          left: 0px;
+          top: calc(36vh - 2px);
+        }
+
+        70% {
+          left: 1px;
+          top: calc(36vh - 5px);
+        }
+
+        80% {
+          left: -1px;
+          top: calc(36vh + 1px);
+        }
+
+        90% {
+          left: 0px;
+          top: calc(36vh - 1px);
+        }
+
+        100% {
+          left: 2px;
+          top: calc(36vh + 3px);
+        }
+      }
+
+      @keyframes ShadowMoveLoop {
+        0% {
+          text-shadow: 0px 0px 8px #FFF, -8px -12px 2px rgba(255, 255, 255, 0.3), 3px 9px 2px rgba(255, 255, 255, 0.3), -14px 8px 2px rgba(255, 255, 255, 0.3), 9px -2px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        10% {
+          text-shadow: 0px 0px 8px #FFF, -2px -16px 2px rgba(255, 255, 255, 0.3), 6px 2px 2px rgba(255, 255, 255, 0.3), -12px 5px 2px rgba(255, 255, 255, 0.3), 7px -8px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        20% {
+          text-shadow: 0px 0px 8px #FFF, -6px -12px 2px rgba(255, 255, 255, 0.3), 3px 4px 2px rgba(255, 255, 255, 0.3), -09px 4px 2px rgba(255, 255, 255, 0.3), 4px -6px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        30% {
+          text-shadow: 0px 0px 8px #FFF, -4px -17px 2px rgba(255, 255, 255, 0.3), 7px 6px 2px rgba(255, 000, 000, 0.3), -17px 2px 2px rgba(255, 255, 255, 0.3), 2px -4px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        40% {
+          text-shadow: 0px 0px 8px #FFF, -9px -13px 2px rgba(255, 255, 255, 0.3), 8px 3px 2px rgba(255, 255, 255, 0.3), -14px 6px 2px rgba(255, 255, 255, 0.3), 8px -9px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        50% {
+          text-shadow: 0px 0px 8px #FFF, -2px -16px 2px rgba(255, 255, 255, 0.3), 3px 7px 2px rgba(255, 255, 255, 0.3), -19px 3px 2px rgba(255, 255, 255, 0.3), 4px -5px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        60% {
+          text-shadow: 0px 0px 8px #FFF, -3px -13px 2px rgba(255, 255, 255, 0.3), 2px 4px 2px rgba(255, 255, 255, 0.3), -14px 7px 2px rgba(255, 255, 255, 0.3), 8px -4px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        70% {
+          text-shadow: 0px 0px 8px #FFF, -4px -18px 2px rgba(255, 000, 000, 0.3), 9px 6px 2px rgba(255, 255, 255, 0.3), -12px 9px 2px rgba(255, 255, 255, 0.3), 4px -8px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        80% {
+          text-shadow: 0px 0px 8px #FFF, -2px -13px 2px rgba(255, 255, 255, 0.3), 5px 2px 2px rgba(255, 255, 255, 0.3), -16px 4px 2px rgba(255, 255, 255, 0.3), 9px -3px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        90% {
+          text-shadow: 0px 0px 8px #FFF, -5px -14px 2px rgba(255, 255, 255, 0.3), 3px 7px 2px rgba(255, 255, 255, 0.3), -13px 8px 2px rgba(255, 255, 255, 0.3), 3px -1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        100% {
+          text-shadow: 0px 0px 8px #FFF, -7px -17px 2px rgba(255, 255, 255, 0.3), 0px 4px 2px rgba(255, 255, 255, 0.3), -11px 3px 2px rgba(255, 000, 000, 0.3), 6px -6px 2px rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      #static {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 50;
+        background-image: url("./res/img/static.gif");
+        background-repeat: repeat;
+        opacity: 0.03;
+        pointer-events: none;
+        animation: 3s StaticLoop linear alternate infinite;
+      }
+
+      @keyframes StaticLoop {
+        0% {
+          opacity: 0.03;
+        }
+
+        100% {
+          opacity: 0.1;
         }
       }
     </style>
   </head>
   <body>
-    <a href="https://discord.gg/x2Vx69PcpB" target="_blank">
-      <h1 id="counter">Join Discord</h1>
-      <h2 id="fuckoff">UNLOCK THE FUTURE HERE.</h2>
+    <div id="static"></div>
+    <a href="https://new.systemspace.network">
+      <h1 id="counter" class=""></h1>
     </a>
   </body>
 </html>
